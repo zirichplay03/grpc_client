@@ -22,8 +22,24 @@ class FitnessClient:
         return self.stub.GetTrainerSchedule(request)
 
     def get_trainer_clients(self, trainer_name):
-        request = store_pb2.TrainerClientsRequest(trainer_name=trainer_name)
-        return self.stub.GetTrainerClients(request)
+        try:
+            request = store_pb2.TrainerClientsRequest(trainer_name=trainer_name)
+            response = self.stub.GetTrainerClients(request)
+
+            # Log and verify the structure of the response
+            print(f"Ответ от сервера: {response}")
+
+            if not response.clients:
+                print("No clients found.")
+            else:
+                for client in response.clients:
+                    print(f"Client Name: {client.client_name}, Training Time: {client.training_time}")
+
+            return response
+
+        except grpc.RpcError as e:
+            print(f"gRPC error: {e}")
+            return None
 
     def book_training(self, client_name, trainer_name, time_slot):
         request = store_pb2.TrainingBookingRequest(

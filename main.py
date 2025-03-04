@@ -268,25 +268,32 @@ class TrainerWindow(QMainWindow):
 
     def showClients(self):
         try:
-            # Получаем список клиентов тренера, используя его имя
+            # Получаем список клиентов тренера
             clients_info = self.client.get_trainer_clients(self.trainer_name)
 
-            # Логируем ответ от сервера
-            print(f"Клиенты для тренера {self.trainer_name}: {clients_info}")
+            # Логируем информацию о полученных данных
+            print(f"Ответ от сервера: {clients_info}")
 
-            # Убедимся, что clients_info является итерируемым объектом
-            if not clients_info:
+            if not clients_info.clients:
                 self.info_label.setText("У вас нет записанных клиентов.")
             else:
-                # Обрабатываем возможный случай, когда clients_info не является списком
-                if isinstance(clients_info, list):
-                    clients_text = "\n".join(clients_info)  # Используем join только с итерируемым объектом
-                else:
-                    clients_text = str(clients_info)  # Если это не список, преобразуем в строку
+                clients_text = "Записанные клиенты:\n"
+                for client_info in clients_info.clients:
+                    print(f"Client Info: {client_info}")  # Log the full client_info
 
-                self.info_label.setText(f"Записанные клиенты:\n{clients_text}")
+                    client_name = client_info.client_name  # Имя клиента
+                    training_time = client_info.training_time  # Время тренировки
+
+                    # Логируем имя клиента и время тренировки
+                    print(f"Клиент: {client_name}, Время тренировки: {training_time}")
+
+                    # Формируем текст для отображения
+                    clients_text += f"Имя: {client_name}, Время: {training_time}\n"
+
+                self.info_label.setText(clients_text)
         except Exception as e:
             self.info_label.setText(f"Ошибка: {e}")
+            print(f"Ошибка: {e}")
 
     def updateInfo(self):
         """Обновление информации справа"""
