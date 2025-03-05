@@ -279,16 +279,18 @@ class TrainerWindow(QMainWindow):
             else:
                 clients_text = "Записанные клиенты:\n"
                 for client_info in clients_info.clients:
-                    print(f"Client Info: {client_info}")  # Log the full client_info
+                    # Печать информации о клиенте для отладки
+                    print(f"Client Info: {client_info}")
 
-                    client_name = client_info.client_name  # Имя клиента
-                    training_time = client_info.training_time  # Время тренировки
+                    # Проверка типа данных client_info
+                    if hasattr(client_info, 'client_name') and hasattr(client_info, 'training_time'):
+                        client_name = client_info.client_name  # Имя клиента
+                        training_time = client_info.training_time  # Время тренировки
 
-                    # Логируем имя клиента и время тренировки
-                    print(f"Клиент: {client_name}, Время тренировки: {training_time}")
-
-                    # Формируем текст для отображения
-                    clients_text += f"Имя: {client_name}, Время: {training_time}\n"
+                        # Формируем текст для отображения
+                        clients_text += f"Имя: {client_name}, Время: {training_time}\n"
+                    else:
+                        print("Неверный формат данных клиента")
 
                 self.info_label.setText(clients_text)
         except Exception as e:
